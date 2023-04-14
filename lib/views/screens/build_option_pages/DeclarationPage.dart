@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/widgets.dart' as pw;
 import '../../utils/GlobalVariable.dart';
 
 class DeclarationPage extends StatefulWidget {
@@ -8,7 +10,6 @@ class DeclarationPage extends StatefulWidget {
   @override
   State<DeclarationPage> createState() => _DeclarationPageState();
 }
-
 class _DeclarationPageState extends State<DeclarationPage> {
   @override
   Widget build(BuildContext context) {
@@ -18,47 +19,44 @@ class _DeclarationPageState extends State<DeclarationPage> {
         centerTitle: true,
         toolbarHeight: 120,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.picture_as_pdf),
+            onPressed: () async{
+            pw.Document pdf = pw.Document();
+
+            pdf.addPage(
+              pw.Page(
+                pageFormat: PdfPageFormat.a4,
+                build: (pw.Context context){
+                  return pw.Column(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    children: [
+                      pw.Center(
+                        child: pw.Text("Hello Flutter",style: pw.TextStyle(
+                          fontSize: 30,
+                        ),),
+                      ),
+                    ],
+                  );
+                },
+              )
+            );
+            await Printing.layoutPdf(onLayout: (format)async{
+              return pdf.save();
+            });
+          }, ),
+        ],
       ),
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: Colors.grey,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.all(25),
-              color: Colors.white,
-              width: 500,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Declaration"),
-                        Switch(
-                          value: swicthVal,
-                          onChanged: (val) {
-                            setState(() {
-                              swicthVal = val;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    (swicthVal) ? Container(
-                      color: Colors.amber,
-                    ) : Container(),
-                  ],
-                ),
-              ),
-            ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+            Center(
+            child: Text("Hello Flutter",style: TextStyle(
+              fontSize: 30,
+            ),),
           ),
-        ),
+        ],
       ),
     );
   }
