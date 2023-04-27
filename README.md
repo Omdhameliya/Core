@@ -1,4 +1,4 @@
-# invoice_second
+# invoice_generater
 
 A new Flutter project.
 
